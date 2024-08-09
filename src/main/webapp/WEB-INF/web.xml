@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+<!--    <servlet>-->
+<!--        <servlet-name>LoginServlet</servlet-name>-->
+<!--        <servlet-class>com.example.ukranian.LoginServlet</servlet-class>-->
+<!--    </servlet>-->
+
+<!--    <servlet>-->
+<!--        <servlet-name>submit_account</servlet-name>-->
+<!--        <servlet-class>com.example.ukranian.submit_account</servlet-class>-->
+<!--    </servlet>-->
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>submit_account</servlet-name>-->
+<!--        <url-pattern>/submit_account</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>LoginServlet</servlet-name>-->
+<!--        <url-pattern>/Login</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+<!--    <servlet>-->
+<!--        <servlet-name>Admin</servlet-name>-->
+<!--        <servlet-class>com.example.ukranian.Admin</servlet-class>-->
+<!--    </servlet>-->
+
+<!--    <servlet>-->
+<!--        <servlet-name>TriggerAlertServlet</servlet-name>-->
+<!--        <servlet-class>com.example.ukranian.TriggerAlertServlet</servlet-class>-->
+<!--    </servlet>-->
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>TriggerAlertServlet</servlet-name>-->
+<!--        <url-pattern>/TriggerAlertServlet</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>Admin</servlet-name>-->
+<!--        <url-pattern>/Admin</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+    <welcome-file-list>
+        <welcome-file>homepage.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
