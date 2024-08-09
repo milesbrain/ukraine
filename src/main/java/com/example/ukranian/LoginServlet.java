@@ -6,24 +6,48 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.Properties;
 
 @WebServlet("/Login")
+
 public class LoginServlet extends HttpServlet {
+    String url;
+    String user;
+    String pass;
+
     private static final long serialVersionUID = 1L;
 
-    // Database connection details hardcoded
-    private String dbUrl = "jdbc:mysql://mysql-container:3306/ukranine";
-    private String dbUsername = "root";
-    private String dbPassword = "Godbless101";
+    private Properties loadDatabaseProperties() {
+        Properties props = new Properties();
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("database.properties")) {
+            if (in == null) {
+                throw new FileNotFoundException("Property file 'database.properties' not found in the classpath");
+            }
+            props.load(in);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return props;
+    }
+
+
 
     @Override
     public void init() throws ServletException {
         try {
-            // Register MySQL JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Properties properties = loadDatabaseProperties();
+            String driverClassName = properties.getProperty("db.driverClassName");
+
+            if (driverClassName != null && !driverClassName.isEmpty()) {
+                Class.forName(driverClassName);
+            } else {
+                throw new ServletException("Database driver class not specified in properties file.");
+            }
         } catch (ClassNotFoundException e) {
             throw new ServletException("JDBC Driver not found", e);
         }
@@ -40,6 +64,10 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        Properties properties = loadDatabaseProperties();
+        url = properties.getProperty("db.url");
+        user = properties.getProperty("db.username");
+        pass = properties.getProperty("db.password");
 
         System.out.println("Received login request: email=" + email);
 
@@ -68,7 +96,7 @@ public class LoginServlet extends HttpServlet {
     private boolean validateLogin(String email, String password, HttpServletRequest request)
             throws SQLException {
         System.out.println("Connecting to database...");
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
+        try (Connection connection = DriverManager.getConnection(url, user,pass)) {
             String query = "SELECT account_name, amount, currency FROM accounts WHERE email = ? AND password = ?";
             System.out.println("Executing query: " + query);
 

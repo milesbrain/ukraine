@@ -1,6 +1,5 @@
 package com.example.ukranian;
 
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,7 +21,7 @@ public class submit_account extends HttpServlet {
         Properties properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("database.properties")) {
             if (input == null) {
-                throw new IOException("Sorry, unable to find db.properties");
+                throw new IOException("Sorry, unable to find database.properties");
             }
             properties.load(input);
         }
@@ -31,7 +30,18 @@ public class submit_account extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Optional: Any initialization needed for your servlet
+        try {
+            Properties properties = loadDatabaseProperties();
+            String driverClassName = properties.getProperty("db.driverClassName");
+
+            if (driverClassName != null && !driverClassName.isEmpty()) {
+                Class.forName(driverClassName);
+            } else {
+                throw new ServletException("Database driver class not specified in properties file.");
+            }
+        } catch (ClassNotFoundException | IOException e) {
+            throw new ServletException("Failed to load JDBC driver", e);
+        }
     }
 
     @Override
@@ -49,37 +59,22 @@ public class submit_account extends HttpServlet {
         String user = properties.getProperty("db.username");
         String pass = properties.getProperty("db.password");
 
-        try {
-            // Register JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            // Establish connection
-            try (Connection connection = DriverManager.getConnection(url, user, pass)) {
-                String sql = "INSERT INTO accounts (account_name, email, password, amount, currency) VALUES (?, ?, ?, ?, ?)";
-                try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                    preparedStatement.setString(1, accountName);
-                    preparedStatement.setString(2, email);
-                    preparedStatement.setString(3, password);
-                    preparedStatement.setBigDecimal(4, amountBig);
-                    preparedStatement.setString(5, currency);
-                    preparedStatement.executeUpdate();
-                }
-                request.setAttribute("successMessage", "Account created successfully!");
-                request.getRequestDispatcher("homepage.jsp").forward(request, response);
+        try (Connection connection = DriverManager.getConnection(url, user, pass)) {
+            String sql = "INSERT INTO accounts (account_name, email, password, amount, currency) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, accountName);
+                preparedStatement.setString(2, email);
+                preparedStatement.setString(3, password);
+                preparedStatement.setBigDecimal(4, amountBig);
+                preparedStatement.setString(5, currency);
+                preparedStatement.executeUpdate();
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Database driver not found");
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+            request.setAttribute("successMessage", "Account created successfully!");
+            request.getRequestDispatcher("homepage.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Database error: " + e.getMessage());
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Optional: Implement if GET request handling is needed
     }
 }
