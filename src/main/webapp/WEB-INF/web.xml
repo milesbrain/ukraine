@@ -4,15 +4,9 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
-    <servlet>
-        <servlet-name>HealthCheckServlet</servlet-name>
-        <servlet-class>com.example.ukranian.HealthCheck</servlet-class>
-    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>HealthCheckServlet</servlet-name>
-        <url-pattern>/health</url-pattern>
-    </servlet-mapping>
+
+
 
 
     <!--    <servlet>-->
